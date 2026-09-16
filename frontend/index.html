@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pune WaterGuard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+
+        <div class="logo">
+            🌧️ Pune WaterGuard
+        </div>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#risk">Check Risk</a>
+            <a href="#map">Risk Map</a>
+            <a href="#about">About</a>
+        </nav>
+
+    </header>
+
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+
+        <div class="hero-content">
+
+            <p class="tagline">PUNE URBAN WATERLOGGING</p>
+
+            <h1>
+                Know the Risk.<br>
+                Plan Your Journey.
+            </h1>
+
+            <p class="description">
+                Check historical waterlogging risk across Pune
+                using rainfall patterns and past waterlogging data.
+            </p>
+
+            <button class="main-button" onclick="scrollToRisk()">
+                📍 Check Waterlogging Risk
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- Risk Checker -->
+    <section id="risk" class="risk-section">
+
+        <div class="section-heading">
+
+            <p class="small-title">RISK CHECKER</p>
+
+            <h2>Check Your Area</h2>
+
+            <p>
+                Enter a Pune location to view its historical
+                waterlogging risk.
+            </p>
+
+        </div>
+
+
+        <div class="risk-card">
+
+            <label for="location">
+                📍 Location
+            </label>
+
+            <input
+                type="text"
+                id="location"
+                placeholder="Example: Karve Nagar, Kothrud"
+            >
+
+            <button class="check-button" onclick="checkRisk()">
+                Check Risk
+            </button>
+
+            <div id="result"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Risk Levels -->
+    <section class="risk-levels">
+
+        <div class="section-heading">
+
+            <p class="small-title">UNDERSTAND THE RESULT</p>
+
+            <h2>Risk Levels</h2>
+
+        </div>
+
+
+        <div class="risk-container">
+
+            <div class="risk-box low">
+                <div class="risk-icon">🟢</div>
+                <h3>Low Risk</h3>
+                <p>
+                    Lower historical occurrence of
+                    waterlogging.
+                </p>
+            </div>
+
+
+            <div class="risk-box moderate">
+                <div class="risk-icon">🟡</div>
+                <h3>Moderate Risk</h3>
+                <p>
+                    Waterlogging has occurred under
+                    certain rainfall conditions.
+                </p>
+            </div>
+
+
+            <div class="risk-box high">
+                <div class="risk-icon">🔴</div>
+                <h3>High Risk</h3>
+                <p>
+                    Higher historical occurrence of
+                    waterlogging.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Map Section -->
+    <section id="map" class="map-section">
+
+        <div class="section-heading">
+
+            <p class="small-title">PUNE RISK MAP</p>
+
+            <h2>Explore Waterlogging Hotspots</h2>
+
+            <p>
+                View identified waterlogging-prone areas
+                across Pune.
+            </p>
+
+        </div>
+
+
+        <div class="map-placeholder">
+
+            <div class="map-message">
+                🗺️
+                <h3>Interactive Pune Map</h3>
+
+                <p>
+                    Historical waterlogging hotspots
+                    will appear here.
+                </p>
+
+                <span>
+                    Map integration coming next
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Project Features -->
+    <section id="about" class="features">
+
+        <div class="section-heading">
+
+            <p class="small-title">PROJECT</p>
+
+            <h2>How Pune WaterGuard Works</h2>
+
+        </div>
+
+
+        <div class="feature-container">
+
+            <div class="feature-card">
+                <div>📊</div>
+                <h3>Historical Data</h3>
+                <p>
+                    Uses historical rainfall and
+                    waterlogging records.
+                </p>
+            </div>
+
+
+            <div class="feature-card">
+                <div>📍</div>
+                <h3>Hotspot Mapping</h3>
+                <p>
+                    Identifies locations where
+                    waterlogging has been reported.
+                </p>
+            </div>
+
+
+            <div class="feature-card">
+                <div>🤖</div>
+                <h3>ML-Based Risk</h3>
+                <p>
+                    A machine-learning model will
+                    estimate waterlogging risk.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <h3>🌧️ Pune WaterGuard</h3>
+
+        <p>
+            Pune Urban Waterlogging Risk Mapping
+        </p>
+
+        <p class="footer-note">
+            Academic Project • Historical Data Based
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
