@@ -1,0 +1,370 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f9fc;
+    color: #183b56;
+}
+
+/* Navigation */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 7%;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #183b56;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #168aad;
+}
+
+
+/* Hero */
+
+.hero {
+    min-height: 88vh;
+    display: flex;
+    align-items: center;
+    padding: 60px 8%;
+    background: linear-gradient(135deg, #e7f6ff, #f7fbff);
+}
+
+.hero-content {
+    max-width: 750px;
+}
+
+.tagline,
+.small-title {
+    color: #168aad;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.hero h1 {
+    font-size: 58px;
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.description {
+    font-size: 19px;
+    line-height: 1.7;
+    max-width: 650px;
+    margin-bottom: 30px;
+    color: #527083;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+.main-button,
+.check-button {
+    background: #168aad;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.main-button:hover,
+.check-button:hover {
+    background: #126782;
+}
+
+
+/* General Sections */
+
+section {
+    padding: 80px 8%;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.section-heading h2 {
+    font-size: 38px;
+    margin-bottom: 15px;
+}
+
+.section-heading p:last-child {
+    color: #637d8c;
+    font-size: 17px;
+}
+
+
+/* Risk Checker */
+
+.risk-section {
+    background: white;
+}
+
+.risk-card {
+    max-width: 600px;
+    margin: auto;
+    padding: 35px;
+    background: #f5f9fc;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.risk-card label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.risk-card input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccdce5;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.risk-card input:focus {
+    outline: 2px solid #168aad;
+}
+
+.check-button {
+    width: 100%;
+}
+
+#result {
+    margin-top: 25px;
+}
+
+.result-box {
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.result-box h3 {
+    margin-bottom: 8px;
+}
+
+.low-result {
+    background: #e9f8ed;
+    border: 1px solid #8bc99b;
+}
+
+.moderate-result {
+    background: #fff8dc;
+    border: 1px solid #e0c95c;
+}
+
+.high-result {
+    background: #ffe9e9;
+    border: 1px solid #df8d8d;
+}
+
+
+/* Risk Levels */
+
+.risk-levels {
+    background: #f5f9fc;
+}
+
+.risk-container {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.risk-box {
+    width: 280px;
+    padding: 30px;
+    text-align: center;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+}
+
+.risk-icon {
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+
+.risk-box h3 {
+    margin-bottom: 10px;
+}
+
+.risk-box p {
+    color: #637d8c;
+    line-height: 1.6;
+}
+
+
+/* Map */
+
+.map-section {
+    background: white;
+}
+
+.map-placeholder {
+    height: 400px;
+    border-radius: 15px;
+    background:
+        linear-gradient(
+            135deg,
+            #dceef7,
+            #eef7fb
+        );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #9cc7d9;
+}
+
+.map-message {
+    text-align: center;
+}
+
+.map-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.map-message h3 {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.map-message p {
+    color: #637d8c;
+    margin-bottom: 15px;
+}
+
+.map-message span {
+    color: #168aad;
+    font-weight: bold;
+}
+
+
+/* Features */
+
+.features {
+    background: #f5f9fc;
+}
+
+.feature-container {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.feature-card {
+    background: white;
+    width: 300px;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+}
+
+.feature-icon {
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    color: #637d8c;
+    line-height: 1.6;
+}
+
+
+/* Footer */
+
+footer {
+    background: #183b56;
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+footer h3 {
+    margin-bottom: 10px;
+}
+
+footer p {
+    margin-bottom: 8px;
+}
+
+.footer-note {
+    opacity: 0.7;
+    font-size: 14px;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav {
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero h1 {
+        font-size: 40px;
+    }
+
+    .hero {
+        min-height: 75vh;
+    }
+
+    section {
+        padding: 60px 5%;
+    }
+
+    .section-heading h2 {
+        font-size: 30px;
+    }
+}
