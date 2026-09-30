@@ -1,0 +1,92 @@
+[
+  {
+    "city": "Pune",
+    "date": "2024-07-25",
+    "location": "Baner",
+    "latitude": 18.559,
+    "longitude": 73.786,
+    "severity": "High",
+    "description": "Heavy rainfall caused water accumulation and traffic disruption."
+  },
+  {
+    "city": "Mumbai",
+    "date": "2024-07-08",
+    "location": "Andheri",
+    "latitude": 19.1197,
+    "longitude": 72.8468,
+    "severity": "High",
+    "description": "Heavy monsoon rainfall led to significant waterlogging."
+  },
+  {
+    "city": "Delhi",
+    "date": "2024-08-01",
+    "location": "Rohini",
+    "latitude": 28.7495,
+    "longitude": 77.0565,
+    "severity": "Medium",
+    "description": "Rainfall resulted in temporary water accumulation on roads."
+  },
+  {
+    "city": "Bengaluru",
+    "date": "2024-10-22",
+    "location": "Bellandur",
+    "latitude": 12.925,
+    "longitude": 77.676,
+    "severity": "High",
+    "description": "Heavy rain caused waterlogging and traffic delays."
+  },
+  {
+    "city": "Chennai",
+    "date": "2024-11-15",
+    "location": "Velachery",
+    "latitude": 12.9815,
+    "longitude": 80.218,
+    "severity": "High",
+    "description": "Intense rainfall resulted in waterlogged roads."
+  },
+  {
+    "city": "Hyderabad",
+    "date": "2024-09-05",
+    "location": "Kukatpally",
+    "latitude": 17.4948,
+    "longitude": 78.3996,
+    "severity": "Medium",
+    "description": "Heavy rainfall caused localized water accumulation."
+  },
+  {
+    "city": "Kolkata",
+    "date": "2024-08-20",
+    "location": "Salt Lake",
+    "latitude": 22.5958,
+    "longitude": 88.4497,
+    "severity": "High",
+    "description": "Monsoon rainfall caused waterlogging in several roads."
+  },
+  {
+    "city": "Ahmedabad",
+    "date": "2024-07-19",
+    "location": "Maninagar",
+    "latitude": 22.995,
+    "longitude": 72.604,
+    "severity": "Medium",
+    "description": "Heavy rain resulted in temporary water accumulation."
+  },
+  {
+    "city": "Nagpur",
+    "date": "2024-07-12",
+    "location": "Wardha Road",
+    "latitude": 21.1197,
+    "longitude": 79.0882,
+    "severity": "Medium",
+    "description": "Heavy rainfall caused waterlogging on parts of the road."
+  },
+  {
+    "city": "Nashik",
+    "date": "2024-07-30",
+    "location": "Gangapur Road",
+    "latitude": 20.0059,
+    "longitude": 73.7629,
+    "severity": "Low",
+    "description": "Rainfall caused minor water accumulation in low-lying areas."
+  }
+]

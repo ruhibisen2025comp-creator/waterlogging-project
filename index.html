@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Waterlogging System</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>🌧️ Waterlogging System</h1>
+
+    <p>
+        Monitor rainfall and waterlogging risk
+    </p>
+
+</header>
+
+
+<!-- CITY SELECTION -->
+
+<section class="city-section">
+
+    <label for="city">
+        Select City:
+    </label>
+
+    <select id="city">
+
+        <option value="Pune">
+            Pune
+        </option>
+
+        <option value="Mumbai">
+            Mumbai
+        </option>
+
+        <option value="Delhi">
+            Delhi
+        </option>
+
+        <option value="Bengaluru">
+            Bengaluru
+        </option>
+
+        <option value="Chennai">
+            Chennai
+        </option>
+
+        <option value="Hyderabad">
+            Hyderabad
+        </option>
+
+        <option value="Kolkata">
+            Kolkata
+        </option>
+
+        <option value="Ahmedabad">
+            Ahmedabad
+        </option>
+
+        <option value="Nagpur">
+            Nagpur
+        </option>
+
+        <option value="Nashik">
+            Nashik
+        </option>
+
+    </select>
+
+    <button onclick="getWeather()">
+        Check Current Condition
+    </button>
+
+</section>
+
+
+<!-- WEATHER INFORMATION -->
+
+<section class="weather-card">
+
+    <h2 id="cityName">
+        Pune
+    </h2>
+
+    <p id="weather">
+        Weather: --
+    </p>
+
+    <p id="temperature">
+        Temperature: --
+    </p>
+
+    <p id="humidity">
+        Humidity: --
+    </p>
+
+    <p id="rainfall">
+        Rainfall: --
+    </p>
+
+    <h2 id="risk">
+        Waterlogging Risk: --
+    </h2>
+
+</section>
+
+
+<!-- MAP -->
+
+<section class="map-section">
+
+    <h2>🗺️ City Map</h2>
+
+    <div id="map"></div>
+
+</section>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>

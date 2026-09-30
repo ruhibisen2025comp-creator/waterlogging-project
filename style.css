@@ -1,0 +1,123 @@
+body {
+
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f4f7f9;
+
+}
+
+
+header {
+
+    background: #1565c0;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 25px;
+
+}
+
+
+.city-section {
+
+    text-align: center;
+
+    padding: 25px;
+
+}
+
+
+select {
+
+    padding: 10px;
+
+    font-size: 16px;
+
+    margin: 10px;
+
+}
+
+
+button {
+
+    padding: 10px 18px;
+
+    background: #1565c0;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+}
+
+
+button:hover {
+
+    background: #0d47a1;
+
+}
+
+
+.weather-card {
+
+    width: 80%;
+
+    max-width: 500px;
+
+    margin: auto;
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+
+}
+
+
+#risk {
+
+    margin-top: 20px;
+
+}
+
+
+.map-section {
+
+    width: 90%;
+
+    margin: 30px auto;
+
+}
+
+
+.map-section h2 {
+
+    text-align: center;
+
+}
+
+
+#map {
+
+    height: 500px;
+
+    width: 100%;
+
+    border: 2px solid #333;
+
+    border-radius: 10px;
+
+}
