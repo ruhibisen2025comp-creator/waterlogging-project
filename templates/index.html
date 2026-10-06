@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Urban Waterlogging Risk Monitor</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f2f6f9;
+            padding: 40px;
+        }
+
+        .container {
+            background: white;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            color: #1f4e79;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            background: #1f4e79;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #163a5c;
+        }
+
+        #result {
+            margin-top: 25px;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .risk {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Urban Waterlogging Risk Monitor</h1>
+
+    <p><b>Location:</b> Pune</p>
+
+    <button onclick="checkRisk()">
+        Check Waterlogging Risk
+    </button>
+
+    <div id="result">
+        Click the button to get the latest risk prediction.
+    </div>
+
+</div>
+
+<script>
+
+function checkRisk() {
+
+    document.getElementById("result").innerHTML =
+        "Checking latest weather and waterlogging risk...";
+
+    fetch("/risk")
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            let prediction = data.prediction;
+            let weather = data.weather;
+            let terrain = data.terrain;
+
+            document.getElementById("result").innerHTML = `
+
+                <h2>Risk Result</h2>
+
+                <p>
+                    <b>Location:</b> ${data.location}
+                </p>
+
+                <p class="risk">
+                    Risk: ${prediction.risk_percentage}
+                </p>
+
+                <p>
+                    <b>Risk Category:</b>
+                    ${prediction.risk_category}
+                </p>
+
+                <p>
+                    <b>Waterlogged:</b>
+                    ${prediction.is_waterlogged ? "Yes" : "No"}
+                </p>
+
+                <hr>
+
+                <h3>Weather</h3>
+
+                <p>
+                    <b>Precipitation:</b>
+                    ${weather.precipitation_mm} mm
+                </p>
+
+                <p>
+                    <b>Humidity:</b>
+                    ${weather.humidity_percent}%
+                </p>
+
+                <hr>
+
+                <h3>Terrain</h3>
+
+                <p>
+                    <b>Elevation:</b>
+                    ${terrain.elevation_m} m
+                </p>
+
+                <p>
+                    <b>Slope:</b>
+                    ${terrain.slope_percentage}%
+                </p>
+
+                <p>
+                    <b>Low-Lying Basin:</b>
+                    ${terrain.is_low_lying_basin ? "Yes" : "No"}
+                </p>
+            `;
+        })
+
+        .catch(error => {
+
+            document.getElementById("result").innerHTML =
+                "Error while getting risk prediction.";
+
+            console.error(error);
+        });
+}
+
+</script>
+
+</body>
+</html>

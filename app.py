@@ -1,12 +1,14 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 import requests
+
+from ml.predict import predict_waterlogging_risk
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def home():
-    return "Waterlogging Backend is Working!"
+    return render_template("index.html")
 
 
 @app.route("/weather")
@@ -43,11 +45,10 @@ def weather():
 @app.route("/risk")
 def risk():
 
-    # Pune location
     latitude = 18.5204
     longitude = 73.8567
+    location_name = "Pune"
 
-    # Get live weather data
     weather_url = "https://api.open-meteo.com/v1/forecast"
 
     params = {
@@ -58,6 +59,7 @@ def risk():
 
     weather_response = requests.get(weather_url, params=params)
     weather_data = weather_response.json()
+
     current = weather_data["current"]
 
     precipitation = current["precipitation"]
@@ -66,34 +68,34 @@ def risk():
     # Temporary terrain values for testing
     elevation = 510.5
     slope = 1.2
+    is_basin = 1
 
-    # Send data to ML service
-    ml_url = "http://127.0.0.1:5001/predict"
-
-    ml_data = {
-        "elevation": elevation,
-        "slope": slope,
-        "precipitation": precipitation,
-        "humidity": humidity
-    }
-
-    ml_response = requests.post(
-        ml_url,
-        json=ml_data
+    # Connect directly to ML model
+    prediction = predict_waterlogging_risk(
+        location_name=location_name,
+        latitude=latitude,
+        longitude=longitude,
+        elevation_m=elevation,
+        slope_pct=slope,
+        is_basin=is_basin,
+        precip_mm=precipitation,
+        humidity_pct=humidity
     )
 
-    prediction = ml_response.json()
-
     return jsonify({
-        "location": "Pune",
+        "location": location_name,
+
         "weather": {
             "precipitation_mm": precipitation,
             "humidity_percent": humidity
         },
+
         "terrain": {
-            "elevation": elevation,
-            "slope": slope
+            "elevation_m": elevation,
+            "slope_percentage": slope,
+            "is_low_lying_basin": is_basin
         },
+
         "prediction": prediction
     })
 
