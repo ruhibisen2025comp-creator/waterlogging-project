@@ -29,29 +29,35 @@ except Exception as exc:
 
 
 def geocode_pune(query):
-    response = requests.get(
-        GEOCODING,
-        params={
-            "name": f"{query}, Pune, Maharashtra, India",
-            "count": 8,
-            "language": "en",
-            "format": "json",
-        },
-        timeout=10,
-    )
-    response.raise_for_status()
-    results = response.json().get("results", [])
+    # Try several search formats because the geocoder may not resolve
+    # a locality when the full address is included in the name parameter.
+    search_names = [
+        f"{query}, Pune, Maharashtra",
+        f"{query}, Pune",
+        query,
+    ]
 
-    if not results:
-        raise ValueError("Location not found. Please enter a Pune locality or landmark.")
+    for search_name in search_names:
+        response = requests.get(
+            GEOCODING,
+            params={
+                "name": search_name,
+                "count": 10,
+                "language": "en",
+                "format": "json",
+            },
+            timeout=10,
+        )
+        response.raise_for_status()
+        results = response.json().get("results", [])
 
-    for item in results:
-        country = str(item.get("country", "")).lower()
-        admin = str(item.get("admin1", "")).lower()
-        if "india" in country and "maharashtra" in admin:
-            return item
+        for item in results:
+            country = str(item.get("country", "")).lower()
+            admin = str(item.get("admin1", "")).lower()
+            if "india" in country and "maharashtra" in admin:
+                return item
 
-    raise ValueError("Please enter a location within Pune, Maharashtra.")
+    raise ValueError("Location not found. Please enter a Pune locality or landmark.")
 
 
 def get_weather(latitude, longitude):
@@ -132,6 +138,7 @@ def predict_risk(elevation, slope, precipitation, humidity):
     if MODEL is None:
         raise RuntimeError(f"ML model could not be loaded: {MODEL_ERROR}")
 
+    # These four feature names match the trained Random Forest model.
     features = pd.DataFrame([{
         "elevation": elevation,
         "slope": slope,
