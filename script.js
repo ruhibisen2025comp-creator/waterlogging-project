@@ -4,6 +4,7 @@
 
 let map;
 let marker;
+let eventMarkersGroup;
 
 // Initialize Map centered on Pune
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,7 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
         attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
 
-    // Optional: Press Enter key to trigger search
+    eventMarkersGroup = L.layerGroup().addTo(map);
+
+    // Load initial map markers from event.json and hotspots
+    loadHistoricalEvents();
+
+    // Trigger search on Enter key
     const input = document.getElementById("locationInput");
     if (input) {
         input.addEventListener("keypress", (e) => {
@@ -22,93 +28,169 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Fetch ML Prediction from Flask API (app.py)
+// Load historical events from event.json via root app.py API
+async function loadHistoricalEvents() {
+    try {
+        const response = await fetch("/api/events");
+        if (!response.ok) return;
+        const events = await response.json();
+
+        events.forEach(evt => {
+            if (evt.latitude && evt.longitude) {
+                const isHigh = evt.severity === "High";
+                const color = isHigh ? "#dc3545" : (evt.severity === "Medium" ? "#ffc107" : "#28a745");
+
+                const circle = L.circleMarker([evt.latitude, evt.longitude], {
+                    radius: 8,
+                    fillColor: color,
+                    color: "#333",
+                    weight: 1,
+                    fillOpacity: 0.7
+                });
+
+                circle.bindPopup(`
+                    <b>${evt.location} (${evt.city || 'Pune'})</b><br>
+                    Date: ${evt.date || 'N/A'}<br>
+                    Severity: <b>${evt.severity}</b><br>
+                    <small>${evt.description}</small>
+                `);
+
+                eventMarkersGroup.addLayer(circle);
+            }
+        });
+    } catch (err) {
+        console.warn("Could not load initial events:", err);
+    }
+}
+
+// Fetch ML Prediction from Root Backend API (app.py)
 async function checkRisk() {
-    const locationName = document.getElementById("locationInput").value.trim();
+    const locationInput = document.getElementById("locationInput");
+    const locationName = locationInput ? locationInput.value.trim() : "";
 
     if (!locationName) {
         alert("Please enter or select a Pune locality name.");
         return;
     }
 
-    document.getElementById("risk").innerText = "Waterlogging Risk: ⏳ Evaluating ML Model...";
+    const riskElement = document.getElementById("risk");
+    if (riskElement) {
+        riskElement.innerText = "Waterlogging Risk: ⏳ Evaluating ML Model...";
+    }
 
     try {
-        // Send request to Flask backend endpoint
-        const response = await fetch("http://127.0.0.1:5001/predict", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ location: locationName })
-        });
+        // Send request to Root Flask Backend endpoint (/api/risk)
+        const response = await fetch(`/api/risk?location=${encodeURIComponent(locationName)}`);
+        
+        if (!response.ok) {
+            throw new Error(`Server returned status ${response.status}`);
+        }
 
         const data = await response.json();
+        displayMLResult(data);
 
-        if (data.status === "SUCCESS") {
-            displayMLResult(data);
-        } else {
-            document.getElementById("risk").innerText = "Waterlogging Risk: ⚠️ Error evaluating location";
-        }
     } catch (error) {
         console.error("Connection Error:", error);
-        document.getElementById("risk").innerText = "Waterlogging Risk: ❌ ML Server Offline (Check app.py)";
+        if (riskElement) {
+            riskElement.innerText = "Waterlogging Risk: ❌ ML Server Offline (Check app.py)";
+        }
     }
 }
 
-// Display ML Prediction & Update Map Pin
+// Display ML Prediction, 7 Features & Update Map Pin
 function displayMLResult(data) {
-    const { latitude, longitude } = data.coordinates;
+    const loc = data.location || {};
+    const weather = data.weather || {};
+    const terrain = data.terrain || {};
+    const pred = data.prediction || {};
 
-    // Update UI text
-    document.getElementById("cityName").innerText = "Location: " + data.location;
-    document.getElementById("coordinates").innerText = `Coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-    document.getElementById("forecast").innerText = "Waterlogging Forecast: " + (data.is_waterlogged ? "Waterlogging Expected ⚠️" : "Normal Conditions ✅");
+    const lat = loc.latitude || 18.5204;
+    const lng = loc.longitude || 73.8567;
+    const locName = loc.name || "Pune Area";
 
-    // Format risk badge and pin color
+    // 1. Update UI Locality & Coordinates
+    document.getElementById("cityName").innerText = "Location: " + locName;
+    document.getElementById("coordinates").innerText = `Coordinates: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+    // 2. Display all 7 Dataset Parameters on Screen
+    if (document.getElementById("precipVal")) {
+        document.getElementById("precipVal").innerText = `${weather.precipitation || weather.rain || 0} mm`;
+    }
+    if (document.getElementById("humidityVal")) {
+        document.getElementById("humidityVal").innerText = `${weather.humidity || 60}%`;
+    }
+    if (document.getElementById("elevationVal")) {
+        document.getElementById("elevationVal").innerText = `${terrain.elevation || 550} m`;
+    }
+    if (document.getElementById("slopeVal")) {
+        document.getElementById("slopeVal").innerText = `${terrain.slope || 1.5}°`;
+    }
+    if (document.getElementById("basinVal")) {
+        document.getElementById("basinVal").innerText = terrain.is_basin === 1 ? "Yes (High Risk)" : "No";
+    }
+
+    // 3. Format Risk Level and Probability Badge
+    const probability = pred.probability !== undefined ? pred.probability : (pred.risk_score || 50);
+    const riskLevelStr = (pred.risk_level || pred.risk_category || "Moderate").toUpperCase();
+
     let riskBadge = "🟢 LOW";
     let pinColor = "#28a745";
+    let forecastText = "Normal Conditions ✅";
 
-    if (data.risk_category === "HIGH") {
-        riskBadge = "🔴 HIGH";
+    if (riskLevelStr.includes("HIGH")) {
+        riskBadge = `🔴 HIGH (${probability.toFixed(1)}%)`;
         pinColor = "#dc3545";
-    } else if (data.risk_category === "MEDIUM") {
-        riskBadge = "🟡 MEDIUM";
+        forecastText = "Waterlogging Expected ⚠️";
+    } else if (riskLevelStr.includes("MODERATE") || riskLevelStr.includes("MEDIUM")) {
+        riskBadge = `🟡 MEDIUM (${probability.toFixed(1)}%)`;
         pinColor = "#ffc107";
-    }
-
-    document.getElementById("risk").innerText = `Waterlogging Risk: ${riskBadge} (${data.risk_percentage})`;
-
-    // Display PMC Alert Banner if triggered
-    const alertBox = document.getElementById("alertBox");
-    if (data.pmc_authority_alert) {
-        alertBox.innerHTML = `
-            <div style="margin-top: 15px; padding: 12px; background: #f8d7da; border-left: 5px solid #dc3545; color: #721c24; border-radius: 5px;">
-                <strong>🚨 PMC Authority Alert Issued:</strong><br>
-                ${data.pmc_authority_alert.action_required}
-            </div>`;
+        forecastText = "Moderate Waterlogging Risk ⚠️";
     } else {
-        alertBox.innerHTML = "";
+        riskBadge = `🟢 LOW (${probability.toFixed(1)}%)`;
     }
 
-    // Animate map view to location
-    map.flyTo([latitude, longitude], 14, { duration: 1.2 });
+    document.getElementById("forecast").innerText = "Waterlogging Forecast: " + forecastText;
+    document.getElementById("risk").innerText = `Waterlogging Risk: ${riskBadge}`;
 
-    // Clear previous marker
+    // 4. Display Alert Banner if triggered
+    const alertBox = document.getElementById("alertBox");
+    if (alertBox) {
+        if (pred.pmc_authority_alert) {
+            alertBox.innerHTML = `
+                <div style="margin-top: 15px; padding: 12px; background: #f8d7da; border-left: 5px solid #dc3545; color: #721c24; border-radius: 5px;">
+                    <strong>🚨 PMC Authority Alert Issued:</strong><br>
+                    ${pred.pmc_authority_alert.action_required || "Caution advised in low-lying areas."}
+                </div>`;
+        } else if (riskLevelStr.includes("HIGH")) {
+            alertBox.innerHTML = `
+                <div style="margin-top: 15px; padding: 12px; background: #f8d7da; border-left: 5px solid #dc3545; color: #721c24; border-radius: 5px;">
+                    <strong>🚨 High Risk Waterlogging Alert:</strong><br>
+                    High probability of drainage overflow. Avoid underpasses and low-lying roads.
+                </div>`;
+        } else {
+            alertBox.innerHTML = "";
+        }
+    }
+
+    // 5. Animate Map & Place Primary Location Marker
+    map.flyTo([lat, lng], 14, { duration: 1.2 });
+
     if (marker) {
         map.removeLayer(marker);
     }
 
-    // Place new color-coded circular marker
-    marker = L.circleMarker([latitude, longitude], {
-        radius: 12,
+    marker = L.circleMarker([lat, lng], {
+        radius: 13,
         fillColor: pinColor,
         color: "#000",
         weight: 2,
         opacity: 1,
-        fillOpacity: 0.85
+        fillOpacity: 0.9
     }).addTo(map);
 
     marker.bindPopup(`
-        <b>${data.location}</b><br>
-        Risk Level: <b>${riskBadge} (${data.risk_percentage})</b>
+        <b>${locName}</b><br>
+        Risk Level: <b>${riskBadge}</b><br>
+        Precipitation: <b>${weather.precipitation || 0} mm</b>
     `).openPopup();
 } 

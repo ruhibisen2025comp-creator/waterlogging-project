@@ -1,123 +1,157 @@
 body {
-
     margin: 0;
-
-    font-family: Arial, sans-serif;
-
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f4f7f9;
-
+    color: #2c3e50;
 }
-
 
 header {
-
     background: #1565c0;
-
     color: white;
-
     text-align: center;
-
-    padding: 25px;
-
+    padding: 25px 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
+header h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+}
 
+header p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* LOCATION SELECTION */
 .city-section {
-
     text-align: center;
-
-    padding: 25px;
-
+    padding: 25px 15px;
+    background: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-
-select {
-
-    padding: 10px;
-
-    font-size: 16px;
-
-    margin: 10px;
-
+.city-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 15px;
 }
 
+input[type="text"], select {
+    padding: 10px 14px;
+    font-size: 15px;
+    margin: 8px 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 280px;
+    max-width: 80%;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, select:focus {
+    border-color: #1565c0;
+    box-shadow: 0 0 5px rgba(21, 101, 192, 0.3);
+}
 
 button {
-
-    padding: 10px 18px;
-
+    padding: 11px 20px;
     background: #1565c0;
-
     color: white;
-
+    font-size: 15px;
+    font-weight: 600;
     border: none;
-
-    border-radius: 5px;
-
+    border-radius: 6px;
     cursor: pointer;
-
+    transition: background 0.2s;
 }
-
 
 button:hover {
-
     background: #0d47a1;
-
 }
 
-
+/* RISK & DATASET PARAMETERS CARD */
 .weather-card {
-
-    width: 80%;
-
-    max-width: 500px;
-
-    margin: auto;
-
+    width: 90%;
+    max-width: 600px;
+    margin: 25px auto;
     background: white;
-
     padding: 25px;
-
-    border-radius: 10px;
-
+    border-radius: 12px;
     text-align: center;
-
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+.weather-card h2 {
+    margin: 10px 0;
+    color: #1565c0;
+}
+
+#coordinates {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* 7 DATASET PARAMETERS GRID */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin: 18px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    text-align: left;
+}
+
+.metrics-grid p {
+    margin: 0;
+    font-size: 13px;
+    color: #495057;
+}
+
+.metrics-grid span {
+    font-weight: 600;
+    color: #1565c0;
+}
+
+#forecast {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 15px;
+}
 
 #risk {
-
-    margin-top: 20px;
-
+    margin-top: 15px;
+    font-size: 22px;
+    padding: 10px;
+    border-radius: 6px;
 }
 
+#alertBox {
+    text-align: left;
+}
 
+/* MAP SECTION */
 .map-section {
-
     width: 90%;
-
+    max-width: 1000px;
     margin: 30px auto;
-
 }
-
 
 .map-section h2 {
-
     text-align: center;
-
+    margin-bottom: 15px;
 }
-
 
 #map {
-
-    height: 500px;
-
+    height: 480px;
     width: 100%;
-
-    border: 2px solid #333;
-
+    border: 1px solid #ddd;
     border-radius: 10px;
-
-}
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+} 
