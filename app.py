@@ -131,13 +131,13 @@ def get_elevation(latitude, longitude):
             "latitude": latitude,
             "longitude": longitude,
             "current": "temperature_2m",
-            "elevation": "true",
             "timezone": "Asia/Kolkata",
         },
         timeout=10,
     )
     response.raise_for_status()
-    return float(response.json().get("elevation") or 0)
+    data = response.json()
+    return float(data.get("elevation") or 0)
 
 
 def estimate_slope(latitude, longitude):
