@@ -12,9 +12,13 @@
 <nav class="nav">
 <div class="brand">🌧️ Pune WaterGuard</div>
 <div class="nav-links">
-<a href="#home">Home</a><a href="#risk-section">Check Risk</a><a href="#map-section">Risk Map</a><a href="#about">About</a>
+<a href="#home">Home</a>
+<a href="#risk-section">Check Risk</a>
+<a href="#map-section">Risk Map</a>
+<a href="#about">About</a>
 </div>
 </nav>
+
 <div id="home" class="hero-content">
 <p class="eyebrow">PUNE URBAN WATERLOGGING</p>
 <h1>Know the Risk.<br>Plan Your Journey.</h1>
@@ -22,35 +26,66 @@
 <a class="primary-btn" href="#risk-section">Check Risk</a>
 </div>
 </header>
+
 <main>
 <section id="risk-section" class="section">
-<div class="section-heading"><p class="eyebrow">RISK CHECKER</p><h2>Check Waterlogging Risk</h2><p>Enter a Pune locality to analyse its current conditions.</p></div>
+<div class="section-heading">
+<p class="eyebrow">RISK CHECKER</p>
+<h2>Check Waterlogging Risk</h2>
+<p>Enter a Pune locality to connect to the complete analysis pipeline.</p>
+</div>
+
 <div class="checker-card">
 <label for="location">Pune Area / Locality</label>
-<div class="search-row"><input id="location" type="text" placeholder="e.g. Kothrud, Baner, Hadapsar" autocomplete="off"><button id="checkButton" type="button" onclick="checkRisk()">Check Risk</button></div>
-<p class="hint">Use a locality, neighbourhood or landmark within Pune.</p>
+<div class="search-row">
+<input id="location" type="text" placeholder="e.g. Kothrud, Baner, Hadapsar" autocomplete="off">
+<button id="checkButton" type="button" onclick="checkRisk()">Check Risk</button>
+</div>
+<p class="hint">The system resolves the location, fetches current weather and terrain data, runs the trained ML model and shows the result on the map.</p>
 <div id="result" aria-live="polite"></div>
 </div>
 </section>
+
 <section id="map-section" class="section map-section">
-<div class="section-heading"><p class="eyebrow">INTERACTIVE MAP</p><h2>Pune Waterlogging Risk Map</h2><p>Explore mapped historical waterlogging locations and the location selected in the risk checker.</p></div>
-<div class="map-card"><div id="map"></div><div class="map-legend">
-<span><i class="legend-dot high"></i> High</span><span><i class="legend-dot moderate"></i> Moderate</span><span><i class="legend-dot low"></i> Low</span><span><i class="legend-dot hotspot"></i> Historical hotspot</span>
-</div></div>
+<div class="section-heading">
+<p class="eyebrow">INTERACTIVE MAP</p>
+<h2>Pune Waterlogging Risk Map</h2>
+<p>Historical hotspots are loaded from the project dataset. Your searched location is highlighted after a risk check.</p>
+</div>
+
+<div class="map-card">
+<div id="map"></div>
+<div class="map-legend">
+<span><i class="legend-dot high"></i> High</span>
+<span><i class="legend-dot moderate"></i> Moderate</span>
+<span><i class="legend-dot low"></i> Low</span>
+<span><i class="legend-dot hotspot"></i> Historical hotspot</span>
+</div>
+</div>
 </section>
+
 <section id="about" class="section about-section">
-<div class="section-heading"><p class="eyebrow">ABOUT THE SYSTEM</p><h2>How Pune WaterGuard Works</h2></div>
+<div class="section-heading">
+<p class="eyebrow">CONNECTED PIPELINE</p>
+<h2>How Pune WaterGuard Works</h2>
+</div>
+
 <div class="feature-grid">
-<article><span>📍</span><h3>Location</h3><p>The selected Pune locality is resolved to coordinates for analysis.</p></article>
-<article><span>🌧️</span><h3>Weather</h3><p>Current precipitation, rainfall and humidity are retrieved for the selected location.</p></article>
-<article><span>⛰️</span><h3>Terrain</h3><p>Terrain elevation and a local elevation-based slope estimate are used as model inputs.</p></article>
-<article><span>🤖</span><h3>ML Risk</h3><p>The trained Random Forest model returns a waterlogging probability and risk category.</p></article>
-<article><span>🗺️</span><h3>Historical Hotspots</h3><p>Available Pune hotspot records are displayed on the interactive map.</p></article>
-<article><span>⚠️</span><h3>Interpretation</h3><p>The result is a risk estimate and should not be treated as a guarantee of present road conditions.</p></article>
+<article><span>📍</span><h3>1. Location</h3><p>Your Pune locality is converted into coordinates using geocoding.</p></article>
+<article><span>🌧️</span><h3>2. Weather</h3><p>Current precipitation, rainfall and humidity are retrieved for the location.</p></article>
+<article><span>⛰️</span><h3>3. Terrain</h3><p>Elevation and the project's current slope estimate are prepared as model inputs.</p></article>
+<article><span>🤖</span><h3>4. ML Prediction</h3><p>The trained Random Forest model returns a waterlogging probability and risk level.</p></article>
+<article><span>🗺️</span><h3>5. Risk Map</h3><p>Historical Pune hotspots and the searched location are displayed using Leaflet.</p></article>
+<article><span>⚠️</span><h3>6. Interpretation</h3><p>The result is a decision-support estimate, not a guarantee of live road conditions.</p></article>
 </div>
 </section>
 </main>
-<footer><p>Pune WaterGuard · Urban Waterlogging Risk Awareness System</p><p>Weather & terrain data: Open-Meteo · Map: OpenStreetMap / Leaflet</p></footer>
+
+<footer>
+<p>Pune WaterGuard · Urban Waterlogging Risk Awareness System</p>
+<p>Weather & terrain data: Open-Meteo · Map: OpenStreetMap / Leaflet · ML: Random Forest</p>
+</footer>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
 </body>
