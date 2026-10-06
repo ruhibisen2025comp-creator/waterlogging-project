@@ -11,6 +11,7 @@ app = Flask(__name__, static_folder=".", static_url_path="")
 
 OPEN_METEO = "https://api.open-meteo.com/v1/forecast"
 GEOCODING = "https://geocoding-api.open-meteo.com/v1/search"
+ELEVATION_API = "https://api.open-meteo.com/v1/elevation"
 MODEL_PATH = os.path.join(
     os.path.dirname(__file__),
     "ml",
@@ -126,18 +127,21 @@ def get_weather(latitude, longitude):
 
 def get_elevation(latitude, longitude):
     response = requests.get(
-        OPEN_METEO,
+        ELEVATION_API,
         params={
             "latitude": latitude,
             "longitude": longitude,
-            "current": "temperature_2m",
-            "timezone": "Asia/Kolkata",
         },
         timeout=10,
     )
     response.raise_for_status()
     data = response.json()
-    return float(data.get("elevation") or 0)
+
+    elevations = data.get("elevation", [])
+    if not elevations:
+        raise ValueError("Elevation data was not returned for this location.")
+
+    return float(elevations[0])
 
 
 def estimate_slope(latitude, longitude):
