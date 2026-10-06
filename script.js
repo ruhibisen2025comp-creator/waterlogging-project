@@ -1,11 +1,219 @@
-const map=L.map("map").setView([18.5204,73.8567],11);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
-let selectedMarker=null;const hotspotLayer=L.layerGroup().addTo(map);
-function escapeHtml(value){return String(value).replace(/[&<>'"]/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));}
-function riskClass(level){const value=String(level||"").toLowerCase();if(value.includes("high"))return"high";if(value.includes("moderate")||value.includes("medium"))return"moderate";if(value.includes("low"))return"low";return"unknown";}
-function riskEmoji(level){const c=riskClass(level);if(c==="high")return"🔴";if(c==="moderate")return"🟡";if(c==="low")return"🟢";return"⚪";}
-function showMessage(html,className=""){document.getElementById("result").innerHTML=`<div class="result-box ${className}">${html}</div>`;}
-async function checkRisk(){const input=document.getElementById("location"),button=document.getElementById("checkButton"),location=input.value.trim();if(!location){showMessage("<h3>⚠️ Enter a Pune location</h3><p>Please enter a Pune area, locality or landmark.</p>","unknown");return;}button.disabled=true;button.textContent="Checking...";showMessage('<p class="loading">Fetching location, current weather, terrain and ML risk...</p>');try{const response=await fetch(`/api/risk?location=${encodeURIComponent(location)}`),data=await response.json();if(!response.ok)throw new Error(data.error||"Unable to calculate risk.");renderRisk(data);}catch(error){showMessage(`<h3>⚠️ Unable to check risk</h3><p class="error">${escapeHtml(error.message)}</p>`,"unknown");}finally{button.disabled=false;button.textContent="Check Risk";}}
-function renderRisk(data){const cls=riskClass(data.prediction.risk_level),emoji=riskEmoji(data.prediction.risk_level),probability=data.prediction.risk_probability==null?"—":`${data.prediction.risk_probability}%`;showMessage(`<div class="result-title"><h3>📍 ${escapeHtml(data.location.name)}</h3><span class="risk-badge ${cls}">${emoji} ${escapeHtml(data.prediction.risk_level)} Risk</span></div><div class="result-grid"><div class="metric"><strong>ML RISK PROBABILITY</strong>${probability}</div><div class="metric"><strong>RAINFALL</strong>${data.weather.rain_mm.toFixed(2)} mm</div><div class="metric"><strong>HUMIDITY</strong>${data.weather.humidity.toFixed(1)}%</div><div class="metric"><strong>TERRAIN ELEVATION</strong>${data.terrain.elevation.toFixed(1)} m</div><div class="metric"><strong>LOCAL SLOPE ESTIMATE</strong>${data.terrain.slope.toFixed(2)}°</div><div class="metric"><strong>HISTORICAL HOTSPOTS NEARBY</strong>${data.nearby_hotspots}</div></div><div class="result-note"><strong>How to read this:</strong> The risk level is generated from the connected ML model using current weather and terrain inputs. It is a risk estimate, not a guarantee of present road conditions.</div>`,cls);map.setView([data.location.latitude,data.location.longitude],14);if(selectedMarker)map.removeLayer(selectedMarker);selectedMarker=L.circleMarker([data.location.latitude,data.location.longitude],{radius:10,weight:3,color:"#0b7285",fillColor:"#74c0fc",fillOpacity:.9}).addTo(map);selectedMarker.bindPopup(`<b>${escapeHtml(data.location.name)}</b><br>${emoji} ${escapeHtml(data.prediction.risk_level)} risk`).openPopup();}
-async function loadHotspots(){try{const response=await fetch("/api/hotspots"),hotspots=await response.json();hotspots.forEach(item=>{const color=item.severity==="High"?"#5b4bb7":item.severity==="Moderate"?"#e0a000":"#218739";const marker=L.circleMarker([item.latitude,item.longitude],{radius:7,color,fillColor:color,fillOpacity:.85,weight:2}).addTo(hotspotLayer);marker.bindPopup(`<b>Historical hotspot</b><br>${escapeHtml(item.location)}<br>Severity: ${escapeHtml(item.severity)}<br>${escapeHtml(item.description||"")}`);});}catch(error){console.error("Hotspot map could not be loaded:",error);}}
-document.getElementById("location").addEventListener("keydown",event=>{if(event.key==="Enter")checkRisk();});loadHotspots();
+const map = L.map("map").setView([18.5204, 73.8567], 11);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+let selectedMarker = null;
+const hotspotLayer = L.layerGroup().addTo(map);
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;"
+    }[char]));
+}
+
+function riskClass(level) {
+    const value = String(level || "").toLowerCase();
+
+    if (value.includes("high")) return "high";
+    if (value.includes("medium") || value.includes("moderate")) return "moderate";
+    if (value.includes("low")) return "low";
+
+    return "unknown";
+}
+
+function riskEmoji(level) {
+    const cls = riskClass(level);
+
+    if (cls === "high") return "🔴";
+    if (cls === "moderate") return "🟡";
+    if (cls === "low") return "🟢";
+
+    return "⚪";
+}
+
+function showMessage(html, className = "") {
+    document.getElementById("result").innerHTML =
+        `<div class="result-box ${className}">${html}</div>`;
+}
+
+async function checkRisk() {
+    const input = document.getElementById("location");
+    const button = document.getElementById("checkButton");
+    const location = input.value.trim();
+
+    if (!location) {
+        showMessage(
+            "<h3>⚠️ Enter a Pune location</h3><p>Please enter a Pune area, locality or landmark.</p>",
+            "unknown"
+        );
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Checking...";
+
+    showMessage(
+        "<p class='loading'>Connecting to location, weather, terrain and ML services...</p>"
+    );
+
+    try {
+        const response = await fetch(
+            `/api/risk?location=${encodeURIComponent(location)}`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Unable to calculate risk.");
+        }
+
+        renderRisk(data);
+    } catch (error) {
+        showMessage(
+            `<h3>⚠️ Unable to check risk</h3><p class="error">${escapeHtml(error.message)}</p>`,
+            "unknown"
+        );
+    } finally {
+        button.disabled = false;
+        button.textContent = "Check Risk";
+    }
+}
+
+function renderRisk(data) {
+    const level = data.prediction.risk_level;
+    const cls = riskClass(level);
+    const emoji = riskEmoji(level);
+    const probability = data.prediction.risk_probability == null
+        ? "—"
+        : `${data.prediction.risk_probability}%`;
+
+    showMessage(
+        `
+        <div class="result-title">
+            <h3>📍 ${escapeHtml(data.location.name)}</h3>
+            <span class="risk-badge ${cls}">
+                ${emoji} ${escapeHtml(level)} Risk
+            </span>
+        </div>
+
+        <div class="result-grid">
+            <div class="metric">
+                <strong>ML RISK PROBABILITY</strong>
+                ${probability}
+            </div>
+
+            <div class="metric">
+                <strong>RAINFALL</strong>
+                ${data.weather.rain_mm.toFixed(2)} mm
+            </div>
+
+            <div class="metric">
+                <strong>HUMIDITY</strong>
+                ${data.weather.humidity.toFixed(1)}%
+            </div>
+
+            <div class="metric">
+                <strong>TERRAIN ELEVATION</strong>
+                ${data.terrain.elevation.toFixed(1)} m
+            </div>
+
+            <div class="metric">
+                <strong>LOCAL SLOPE ESTIMATE</strong>
+                ${data.terrain.slope.toFixed(2)}%
+            </div>
+
+            <div class="metric">
+                <strong>NEARBY HISTORICAL HOTSPOTS</strong>
+                ${data.nearby_hotspots}
+            </div>
+        </div>
+
+        <div class="result-note">
+            <strong>How to read this:</strong>
+            The risk level is generated by the connected Random Forest model
+            using location, terrain and current weather inputs. It is a risk
+            estimate, not a guarantee of present road conditions.
+        </div>
+        `,
+        cls
+    );
+
+    map.setView(
+        [data.location.latitude, data.location.longitude],
+        14
+    );
+
+    if (selectedMarker) {
+        map.removeLayer(selectedMarker);
+    }
+
+    selectedMarker = L.circleMarker(
+        [data.location.latitude, data.location.longitude],
+        {
+            radius: 10,
+            weight: 3,
+            color: "#0b7285",
+            fillColor: "#74c0fc",
+            fillOpacity: 0.9
+        }
+    ).addTo(map);
+
+    selectedMarker.bindPopup(
+        `<b>${escapeHtml(data.location.name)}</b><br>${emoji} ${escapeHtml(level)} risk`
+    ).openPopup();
+}
+
+async function loadHotspots() {
+    try {
+        const response = await fetch("/api/hotspots");
+
+        if (!response.ok) {
+            throw new Error("Unable to load hotspots.");
+        }
+
+        const hotspots = await response.json();
+
+        hotspots.forEach(item => {
+            const severity = String(item.severity || "").toLowerCase();
+            const color =
+                severity === "high" ? "#d62828" :
+                severity === "medium" || severity === "moderate" ? "#e0a000" :
+                "#218739";
+
+            const marker = L.circleMarker(
+                [item.latitude, item.longitude],
+                {
+                    radius: 8,
+                    color,
+                    fillColor: color,
+                    fillOpacity: 0.85,
+                    weight: 2
+                }
+            ).addTo(hotspotLayer);
+
+            marker.bindPopup(
+                `<b>Historical hotspot</b><br>
+                ${escapeHtml(item.location)}<br>
+                Severity: ${escapeHtml(item.severity)}<br>
+                Date: ${escapeHtml(item.date)}<br>
+                ${escapeHtml(item.description || "")}`
+            );
+        });
+    } catch (error) {
+        console.error("Hotspot map could not be loaded:", error);
+    }
+}
+
+document.getElementById("location").addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        checkRisk();
+    }
+});
+
+loadHotspots();
