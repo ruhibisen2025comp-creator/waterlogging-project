@@ -1,9 +1,9 @@
-import os
 import json
+import os
 import requests
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder=".", static_url_path="")
 
 # Pune locality coordinates & terrain lookup table matching 7 dataset parameters
 PUNE_LOCALITIES = {
@@ -32,6 +32,10 @@ HISTORICAL_HOTSPOTS = [
 @app.route("/")
 def home():
     return render_template("index.html")
+
+@app.route("/<path:filename>")
+def serve_static(filename):
+    return send_from_directory(".", filename)
 
 @app.route("/api/hotspots")
 def hotspots():
@@ -120,4 +124,4 @@ def risk():
     })
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True) 
+    app.run(host="127.0.0.1", port=5000, debug=True)
