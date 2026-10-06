@@ -29,8 +29,8 @@ except Exception as exc:
 
 
 def geocode_pune(query):
-    # Try several search formats because the geocoder may not resolve
-    # a locality when the full address is included in the name parameter.
+    # Open-Meteo is useful for cities, but some Pune localities are not
+    # present in its GeoNames index. Try Open-Meteo first.
     search_names = [
         f"{query}, Pune, Maharashtra",
         f"{query}, Pune",
@@ -45,6 +45,7 @@ def geocode_pune(query):
                 "count": 10,
                 "language": "en",
                 "format": "json",
+                "countryCode": "IN",
             },
             timeout=10,
         )
@@ -57,7 +58,49 @@ def geocode_pune(query):
             if "india" in country and "maharashtra" in admin:
                 return item
 
-    raise ValueError("Location not found. Please enter a Pune locality or landmark.")
+    # Fallback to OpenStreetMap Nominatim, which has better coverage
+    # for neighbourhoods/localities such as Kothrud, Wakad and Hadapsar.
+    response = requests.get(
+        "https://nominatim.openstreetmap.org/search",
+        params={
+            "q": f"{query}, Pune, Maharashtra, India",
+            "format": "jsonv2",
+            "limit": 10,
+            "addressdetails": 1,
+        },
+        headers={
+            "User-Agent": "Pune-WaterGuard/1.0",
+        },
+        timeout=10,
+    )
+    response.raise_for_status()
+    results = response.json()
+
+    for item in results:
+        address = item.get("address", {})
+        country = str(address.get("country", "")).lower()
+        state = str(address.get("state", "")).lower()
+        city = " ".join([
+            str(address.get("city", "")),
+            str(address.get("town", "")),
+            str(address.get("municipality", "")),
+            str(address.get("county", "")),
+        ]).lower()
+
+        if (
+            "india" in country
+            and "maharashtra" in state
+            and "pune" in city
+        ):
+            return {
+                "name": item.get("display_name", query).split(",")[0],
+                "latitude": float(item["lat"]),
+                "longitude": float(item["lon"]),
+            }
+
+    raise ValueError(
+        "Location not found. Please enter a Pune locality or landmark."
+    )
 
 
 def get_weather(latitude, longitude):
