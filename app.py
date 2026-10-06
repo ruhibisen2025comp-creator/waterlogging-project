@@ -11,7 +11,11 @@ app = Flask(__name__, static_folder=".", static_url_path="")
 
 OPEN_METEO = "https://api.open-meteo.com/v1/forecast"
 GEOCODING = "https://geocoding-api.open-meteo.com/v1/search"
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "ml", "waterlogging_model.pkl")
+MODEL_PATH = os.path.join(
+    os.path.dirname(__file__),
+    "ml",
+    "waterlogging_rf_model.joblib",
+)
 
 with open(os.path.join(os.path.dirname(__file__), "event.json"), "r", encoding="utf-8") as f:
     EVENTS = json.load(f)
@@ -44,7 +48,6 @@ def geocode_pune(query):
     for item in results:
         country = str(item.get("country", "")).lower()
         admin = str(item.get("admin1", "")).lower()
-        city = str(item.get("name", "")).lower()
         if "india" in country and "maharashtra" in admin:
             return item
 
@@ -90,7 +93,6 @@ def get_elevation(latitude, longitude):
 
 def estimate_slope(latitude, longitude):
     # The current project does not contain a verified GIS slope layer.
-    # Keep the assumption explicit so it can be replaced later.
     return 2.0
 
 
@@ -126,17 +128,14 @@ def nearby_hotspots(latitude, longitude, radius_km=8):
     return sorted(found, key=lambda x: x["distance_km"])
 
 
-def predict_risk(latitude, longitude, elevation, slope, is_basin, precipitation, humidity):
+def predict_risk(elevation, slope, precipitation, humidity):
     if MODEL is None:
         raise RuntimeError(f"ML model could not be loaded: {MODEL_ERROR}")
 
     features = pd.DataFrame([{
-        "latitude": latitude,
-        "longitude": longitude,
-        "ground_elevation_m": elevation,
-        "slope_percentage": slope,
-        "is_low_lying_basin": is_basin,
-        "precipMM": precipitation,
+        "elevation": elevation,
+        "slope": slope,
+        "precipitation": precipitation,
         "humidity": humidity,
     }])
 
@@ -189,11 +188,8 @@ def risk():
         is_basin = estimate_low_lying_basin(elevation, slope)
 
         prediction = predict_risk(
-            latitude=latitude,
-            longitude=longitude,
             elevation=elevation,
             slope=slope,
-            is_basin=is_basin,
             precipitation=weather["precipitation_mm"],
             humidity=weather["humidity"],
         )
