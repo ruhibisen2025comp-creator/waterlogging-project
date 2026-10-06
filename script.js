@@ -189,8 +189,9 @@ function displayMLResult(data) {
     }).addTo(map);
 
     marker.bindPopup(`
-        <b>${locName}</b><br>
-        Risk Level: <b>${riskBadge}</b><br>
-        Precipitation: <b>${weather.precipitation || 0} mm</b>
-    `).openPopup();
+    <b>${locName}</b><br>
+    Risk Level: <b>${riskBadge}</b><br>
+    Precipitation: <b>${weather.precipitation || 0} mm</b><br>
+    <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" style="color: #1565c0; font-weight: bold;">View in Google Maps 🗺️</a>
+   `).openPopup(); 
 } 
