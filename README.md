@@ -1,59 +1,56 @@
-# Pune WaterGuard
+# UrbanFlow
 
-Pune WaterGuard is a Flask-based urban waterlogging risk awareness website.
+UrbanFlow is a Flask-based urban waterlogging and transit risk analysis web platform designed for Pune. It evaluates environmental and topographical conditions along specific commuter corridors to predict flood risks and provide safe navigation options.
 
-## Connected architecture
+## Connected Architecture
 
-Browser
--> Flask /api/risk
--> Open-Meteo geocoding
--> Open-Meteo current weather
--> Open-Meteo elevation
--> Random Forest ML model
--> historical hotspot dataset
--> JSON response
--> frontend result + Leaflet map
+Browser -> Flask `/api/risk` -> Open-Meteo geocoding -> Open-Meteo current weather -> Open-Meteo elevation -> Random Forest ML model -> historical hotspot dataset -> JSON response -> frontend result + Leaflet map + high-risk navigation hand-off
 
-## Run locally
+## Tech Stack
+* **Backend:** Python, Flask
+* **Frontend:** HTML5, CSS3, JavaScript
+* **Mapping:** Leaflet.js, Open-Meteo Geocoding & Elevation APIs
+* **Machine Learning:** Scikit-learn (Random Forest Model)
 
-1. Install Python 3.10+.
-2. Open a terminal in the repository folder.
-3. Install dependencies:
+## Run Locally
 
-```bash
-pip install -r requirements.txt
-```
+1. Open the repository folder in VS Code or your terminal.
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+Run the application:
 
-4. Start the complete website:
-
-```bash
+Bash
 python app.py
-```
+Open http://127.0.0.1:5000 in your browser.
 
-5. Open http://127.0.0.1:5000
+Note: Only the main Flask server is required. The ML model is loaded directly by app.py.
 
-Only the main Flask server is required. The ML model is loaded directly by app.py, so a separate ML server is not needed.
+Main Files
+index.html — Website structure and UI layout
 
-## Main files
+style.css — Custom styling and gradient themes
 
-- index.html — website structure
-- style.css — website styling
-- script.js — frontend API calls and interactive Leaflet map
-- app.py — backend, external data integration and ML inference
-- event.json — historical hotspot records
-- ml/waterlogging_model.pkl — trained Random Forest model
-- ml/predict.py — standalone ML inference reference
-- ml/train_model.py — model-training code
+script.js — Frontend API calls, interactive Leaflet map, and navigation triggers
 
-## API endpoints
+app.py — Backend routing, external data integration, and ML inference
 
-- GET / — website
-- GET /api/risk?location=Kothrud — complete risk analysis
-- GET /api/hotspots — Pune historical hotspots
-- GET /health — backend and model health status
+event.json — Historical Pune flood hotspot records
 
-## Important limitation
+ml/waterlogging_model.pkl — Trained Random Forest model
 
-The project does not yet contain a verified GIS slope layer. The backend therefore uses an explicit fallback slope estimate and marks it in the API response. Replace estimate_slope() with a verified GIS/elevation-derived slope calculation when that dataset is available.
+ml/predict.py — Standalone ML inference reference
 
-The prediction is an awareness/decision-support estimate and should not be treated as guaranteed live road-condition information.
+ml/train_model.py — Model-training script
+
+API Endpoints
+GET / — Renders the main web interface
+
+GET /api/risk?source=...&destination=... — Executes route-based risk analysis
+
+GET /api/hotspots — Fetches Pune historical flood hotspots
+
+GET /health — Backend and model health status check
+
+## System Limitations & Disclaimer
+The platform utilizes a fallback slope estimate when detailed GIS slope layers are pending, and flags this dynamically in the API response. UrbanFlow serves as an intelligent decision-support and hazard awareness system; predictions should be used alongside official municipal advisories during extreme weather events.
